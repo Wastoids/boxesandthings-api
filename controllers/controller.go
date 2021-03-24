@@ -1,11 +1,18 @@
 package controllers
 
+import "errors"
+
 type Function interface {
 	Run() (interface{}, error)
 }
 
 type Controller struct{}
 
-func (c Controller) GetFunction() (Function, error) {
-	return nil, nil
+var errInvalidResource = errors.New("invalid resource requested")
+
+func (c Controller) GetFunction(resource string) (Function, error) {
+	switch resource {
+	default:
+		return nil, errInvalidResource
+	}
 }
