@@ -16,3 +16,7 @@ func (c Controller) GetFunction(resource string) (Function, error) {
 		return nil, errInvalidResource
 	}
 }
+
+func NewController() Controller {
+	return Controller{}
+}
