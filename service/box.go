@@ -25,6 +25,6 @@ func (b Box) GetTopLevelBoxesForUser(userID string) ([]model.Box, error) {
 	return b.db.GetTopLevelBoxesForUser(userID)
 }
 
-func NewBoxService() Box {
-	return Box{}
+func NewBoxService(db Storage) Box {
+	return Box{db: db}
 }
