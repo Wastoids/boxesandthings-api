@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/Wastoids/boxesandthings-api/controllers"
+	"github.com/Wastoids/boxesandthings-api/controller"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 )
@@ -11,7 +11,7 @@ func main() {
 }
 
 func HandleRequest(event events.APIGatewayProxyRequest) (interface{}, error) {
-	f, err := controllers.NewController().GetFunction(event.PathParameters["resource"])
+	f, err := controller.NewController().GetFunction(event.PathParameters["resource"])
 	if err != nil {
 		panic("invalid resource path")
 	}

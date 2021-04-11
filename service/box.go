@@ -18,11 +18,11 @@ type Box struct {
 	db Storage
 }
 
-func (b Box) GetTopLevelBoxesForUser(userID string) ([]model.Box, error) {
-	if len(userID) == 0 {
+func (b Box) GetTopLevelBoxesForUser(userName string) ([]model.Box, error) {
+	if len(userName) == 0 {
 		return nil, errInvalidUser
 	}
-	return b.db.GetTopLevelBoxesForUser(userID)
+	return b.db.GetTopLevelBoxesForUser(userName)
 }
 
 func NewBoxService(db Storage) Box {
