@@ -11,7 +11,7 @@ func main() {
 }
 
 func HandleRequest(event events.APIGatewayProxyRequest) (interface{}, error) {
-	f, err := controller.NewController().GetFunction(event.PathParameters["resource"])
+	f, err := controller.NewController().GetFunction(event)
 	if err != nil {
 		panic("invalid resource path")
 	}

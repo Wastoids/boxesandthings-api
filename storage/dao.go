@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/Wastoids/boxesandthings-api/model"
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -15,6 +16,8 @@ import (
 const (
 	tableName = "box_things"
 	debug     = "DEBUG"
+	address   = "http://localhost:4566"
+	region    = "ca-central-1"
 )
 
 type dao struct {
@@ -23,18 +26,25 @@ type dao struct {
 
 func newDao() (d dao, err error) {
 	var cfg aws.Config
-	customResolver := aws.EndpointResolverFunc(func(service, region string) (aws.Endpoint, error) {
-		return aws.Endpoint{
-			PartitionID:   "aws",
-			URL:           "http://localhost:4566",
-			SigningRegion: "ca-central-1",
-		}, nil
-	})
-	cfg, err = config.LoadDefaultConfig(context.TODO(), config.WithRegion("ca-central-1"),
-		config.WithEndpointResolver(customResolver))
-	if err != nil {
-		log.Printf("error: %v", err)
-		return dao{}, err
+	if len(os.Getenv(debug)) > 0 {
+		customResolver := aws.EndpointResolverFunc(func(service, region string) (aws.Endpoint, error) {
+			return aws.Endpoint{
+				PartitionID:   "aws",
+				URL:           address,
+				SigningRegion: region,
+			}, nil
+		})
+		cfg, err = config.LoadDefaultConfig(context.TODO(), config.WithEndpointResolver(customResolver))
+		if err != nil {
+			log.Printf("error: %v", err)
+			return dao{}, err
+		}
+	} else {
+		cfg, err = config.LoadDefaultConfig(context.TODO(), config.WithRegion(region))
+		if err != nil {
+			log.Printf("error: %v", err)
+			return dao{}, err
+		}
 	}
 
 	return dao{dynamoDB: dynamodb.NewFromConfig(cfg)}, nil
