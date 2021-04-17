@@ -2,17 +2,11 @@ package service
 
 import (
 	"errors"
-
-	"github.com/Wastoids/boxesandthings-api/model"
 )
 
 var (
 	errInvalidUser = errors.New("invalid user")
 )
-
-type Storage interface {
-	GetTopLevelBoxesForUser(userID string) ([]model.Box, error)
-}
 
 type GetTopBoxes struct {
 	db       Storage
