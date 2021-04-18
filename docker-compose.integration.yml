@@ -20,6 +20,7 @@ services:
         volumes: 
             - ./scripts/create-table.sh:/scripts/create-table.sh
             - ./scripts/dynamodb.json:/scripts/dynamodb.json
+            - ./scripts/data.json:/scripts/data.json
         entrypoint: sh -c "sleep 30 && /scripts/create-table.sh"
 
 networks:

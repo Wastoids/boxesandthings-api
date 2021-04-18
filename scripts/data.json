@@ -1,0 +1,31 @@
+{
+    "box_things": [
+        {
+            "PutRequest": {
+                "Item": {
+                    "pk": {"S": "another_guy"},
+                    "sk": {"S": "top#2529c1e1-a917-457f-93b7-dfefea6105eb"},
+                    "name": {"S": "House 1"}
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "pk": {"S": "another_guy"},
+                    "sk": {"S": "top#4f117852-db61-47eb-b51a-1035c8cbf294"},
+                    "name": {"S": "House 2"}
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "pk": {"S": "another_guy"},
+                    "sk": {"S": "top#18682a9a-9ad0-4bb5-b751-743d6aa7cec2"},
+                    "name": {"S": "Fridge in House 1"}
+                }
+            }
+        }
+    ]
+}

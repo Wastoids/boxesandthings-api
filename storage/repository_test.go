@@ -36,8 +36,21 @@ var _ = Describe("Repository", func() {
 
 		})
 
-		XContext("and there are a few boxes", func() {
+		Context("and there are a few boxes", func() {
+			BeforeEach(func() {
+				username = "another_guy"
+				repo = storage.NewRepository()
+				boxes, err = repo.GetTopLevelBoxesForUser(username)
+			})
 
+			It("should not return an error", func() {
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("should return a list of 3 boxes", func() {
+				Expect(boxes).NotTo(BeNil())
+				Expect(len(boxes)).To(Equal(3))
+			})
 		})
 
 	})
