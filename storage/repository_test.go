@@ -18,16 +18,16 @@ var _ = Describe("Repository", func() {
 			boxes    []model.Box
 		)
 
-		Context("and it fails", func() {
+		Context("and there are no boxes", func() {
 
 			BeforeEach(func() {
-				username = "non_existent_username"
+				username = "some_guy"
 				repo = storage.NewRepository()
 				boxes, err = repo.GetTopLevelBoxesForUser(username)
 			})
 
-			It("should return an error", func() {
-				Expect(err).To(HaveOccurred())
+			It("should not return an error", func() {
+				Expect(err).NotTo(HaveOccurred())
 			})
 
 			It("should return an empty list of boxes", func() {
@@ -36,7 +36,7 @@ var _ = Describe("Repository", func() {
 
 		})
 
-		XContext("and it succeeds", func() {
+		XContext("and there are a few boxes", func() {
 
 		})
 

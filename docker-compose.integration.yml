@@ -1,0 +1,28 @@
+version: "3.9"
+services: 
+    db:
+        image: localstack/localstack:0.12.9.1
+        ports:
+            - "4566:4566"
+        networks: 
+            - dev
+    setup:
+        image: amazon/aws-cli:2.1.38
+        networks: 
+            - dev
+        depends_on: 
+            - db
+        environment: 
+            - AWS_DEFAULT_REGION=ca-central-1
+            - AWS_ACCESS_KEY_ID=test
+            - AWS_SECRET_ACCESS_KEY=test
+            - AWS_SESSION_TOKEN=test
+        volumes: 
+            - ./scripts/create-table.sh:/scripts/create-table.sh
+            - ./scripts/dynamodb.json:/scripts/dynamodb.json
+        entrypoint: sh -c "sleep 30 && /scripts/create-table.sh"
+
+networks:
+    dev:
+        name: dev
+        driver: bridge
