@@ -12,6 +12,10 @@ func (r Repository) GetTopLevelBoxesForUser(userName string) ([]model.Box, error
 	return d.getTopLevelBoxesForUser(userName)
 }
 
+func (r Repository) SaveBox(b model.Box) error {
+	return nil
+}
+
 func NewRepository() Repository {
 	return Repository{}
 }
