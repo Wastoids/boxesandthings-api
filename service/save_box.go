@@ -1,6 +1,7 @@
 package service
 
 import (
+	"encoding/json"
 	"errors"
 
 	"github.com/Wastoids/boxesandthings-api/model"
@@ -21,4 +22,18 @@ func (s SaveBox) Run() (interface{}, error) {
 	}
 
 	return nil, s.db.SaveBox(s.b)
+}
+
+func NewSaveBox(db Storage, b model.Box) SaveBox {
+	return SaveBox{b: b, db: db}
+}
+
+func GetBoxFromRequest(body string) model.Box {
+	var req struct {
+		Name string `json:"name"`
+	}
+	if err := json.Unmarshal([]byte(body), &req); err != nil {
+		return model.Box{}
+	}
+	return model.Box{Name: req.Name}
 }

@@ -11,13 +11,17 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+	"github.com/google/uuid"
 )
 
 const (
-	tableName = "box_things"
-	debug     = "DEBUG"
-	address   = "http://localhost:4566"
-	region    = "ca-central-1"
+	tableName  = "box_things"
+	debug      = "DEBUG"
+	address    = "http://localhost:4566"
+	region     = "ca-central-1"
+	itemEntity = "item#"
+	boxEntity  = "box#"
+	details    = "details"
 )
 
 type dao struct {
@@ -83,9 +87,36 @@ func (d dao) getTopLevelBoxesForUser(userName string) (boxes []model.Box, err er
 	return boxes, nil
 }
 
+func (d dao) saveBox(b model.Box) error {
+	_, err := d.dynamoDB.PutItem(context.TODO(), &dynamodb.PutItemInput{
+		Item: map[string]types.AttributeValue{
+			"pk": &types.AttributeValueMemberS{
+				Value: fmt.Sprintf("%v%v", boxEntity, uuid.New().String()),
+			},
+			"sk": &types.AttributeValueMemberS{
+				Value: details,
+			},
+			"name": &types.AttributeValueMemberS{
+				Value: b.Name,
+			},
+		},
+		TableName: aws.String(tableName),
+	})
+
+	return err
+}
+
 func toBox(attributeMap map[string]types.AttributeValue) model.Box {
 	name := attributeMap["name"].(*types.AttributeValueMemberS)
 	return model.Box{
 		Name: name.Value,
 	}
+}
+
+func fromBox(b model.Box) map[string]types.AttributeValue {
+	result := map[string]types.AttributeValue{}
+
+	result["name"] = &types.AttributeValueMemberS{Value: b.Name}
+
+	return result
 }

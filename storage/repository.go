@@ -13,7 +13,11 @@ func (r Repository) GetTopLevelBoxesForUser(userName string) ([]model.Box, error
 }
 
 func (r Repository) SaveBox(b model.Box) error {
-	return nil
+	d, err := newDao()
+	if err != nil {
+		return err
+	}
+	return d.saveBox(b)
 }
 
 func NewRepository() Repository {

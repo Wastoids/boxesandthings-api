@@ -21,6 +21,8 @@ func (c Controller) GetFunction(e events.APIGatewayProxyRequest) (Function, erro
 	switch e.PathParameters["resource"] {
 	case "topBoxes":
 		return service.NewGetTopBoxesService(storage.NewRepository(), e.QueryStringParameters["username"]), nil
+	case "saveBox":
+		return service.NewSaveBox(storage.NewRepository(), service.GetBoxFromRequest(e.Body)), nil
 	default:
 		return nil, errInvalidResource
 	}

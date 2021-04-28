@@ -54,4 +54,28 @@ var _ = Describe("Repository", func() {
 		})
 
 	})
+
+	When("we need to SaveBox", func() {
+		var (
+			b = model.Box{Name: "my box"}
+		)
+
+		Context("and there is no error", func() {
+
+			var (
+				err error
+			)
+
+			BeforeEach(func() {
+				repo := storage.NewRepository()
+				err = repo.SaveBox(b)
+			})
+
+			// TODO: When you add a method to get a specific box detail
+			// assert that the box actuall got saved
+			It("should not cause an error", func() {
+				Expect(err).NotTo(HaveOccurred())
+			})
+		})
+	})
 })
