@@ -20,6 +20,14 @@ func (r Repository) SaveBox(b model.Box) error {
 	return d.saveBox(b)
 }
 
+func (r Repository) SaveThing(t model.Thing) error {
+	d, err := newDao()
+	if err != nil {
+		return err
+	}
+	return d.saveThing(t)
+}
+
 func NewRepository() Repository {
 	return Repository{}
 }

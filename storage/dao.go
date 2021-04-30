@@ -106,6 +106,10 @@ func (d dao) saveBox(b model.Box) error {
 	return err
 }
 
+func (d dao) saveThing(t model.Thing) error {
+	return nil
+}
+
 func toBox(attributeMap map[string]types.AttributeValue) model.Box {
 	name := attributeMap["name"].(*types.AttributeValueMemberS)
 	return model.Box{
