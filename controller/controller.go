@@ -17,12 +17,13 @@ type Function interface {
 type Controller struct{}
 
 func (c Controller) GetFunction(e events.APIGatewayProxyRequest) (Function, error) {
+	repo := storage.NewRepository()
 
 	switch e.PathParameters["resource"] {
 	case "topBoxes":
-		return service.NewGetTopBoxesService(storage.NewRepository(), e.QueryStringParameters["username"]), nil
+		return service.NewGetTopBoxesService(repo, e.QueryStringParameters["username"]), nil
 	case "saveBox":
-		return service.NewSaveBox(storage.NewRepository(), service.GetBoxFromRequest(e.Body)), nil
+		return service.NewSaveBox(repo, service.GetBoxFromRequest(e.Body)), nil
 	default:
 		return nil, errInvalidResource
 	}
