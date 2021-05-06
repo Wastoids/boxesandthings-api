@@ -1,15 +1,46 @@
 package service
 
-import "github.com/Wastoids/boxesandthings-api/storage"
+import (
+	"encoding/json"
+	"errors"
+
+	"github.com/Wastoids/boxesandthings-api/model"
+	"github.com/Wastoids/boxesandthings-api/storage"
+)
+
+var (
+	nameRequiredForThing = errors.New("name is required for a thing")
+)
 
 type SaveThing struct {
-	db storage.Repository
+	db    storage.Repository
+	t     model.Thing
+	boxID string
 }
 
-func NewSaveThing(db storage.Repository) SaveThing {
-	return SaveThing{db: db}
+func NewSaveThing(db storage.Repository, t model.Thing, boxID string) SaveThing {
+	return SaveThing{db: db, t: t}
 }
 
 func (s SaveThing) Run() (interface{}, error) {
-	return nil, nil
+	if len(s.t.Name) == 0 {
+		return nil, nameRequiredForThing
+	}
+	return nil, s.db.SaveThing(s.t, s.boxID)
+}
+
+func GetThingFromRequest(body string) model.Thing {
+	var req struct {
+		ID          string `json:"id"`
+		Name        string `json:"name"`
+		Description string `json:"description"`
+	}
+	if err := json.Unmarshal([]byte(body), &req); err != nil {
+		return model.Thing{}
+	}
+	return model.Thing{
+		ID:          req.ID,
+		Name:        req.Name,
+		Description: req.Description,
+	}
 }
