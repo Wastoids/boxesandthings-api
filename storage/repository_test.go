@@ -3,10 +3,12 @@ package storage_test
 import (
 	"github.com/Wastoids/boxesandthings-api/model"
 	"github.com/Wastoids/boxesandthings-api/storage"
+	"github.com/google/uuid"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
+// TODO: Make tests more exhaustive
 var _ = Describe("Repository", func() {
 
 	When("we need to GetTopLevelBoxesForUser", func() {
@@ -57,7 +59,7 @@ var _ = Describe("Repository", func() {
 
 	When("we need to SaveBox", func() {
 		var (
-			b = model.Box{Name: "my box"}
+			b = model.Box{ID: uuid.NewString(), Name: "my box"}
 		)
 
 		Context("and there is no error", func() {
@@ -72,10 +74,29 @@ var _ = Describe("Repository", func() {
 			})
 
 			// TODO: When you add a method to get a specific box detail
-			// assert that the box actuall got saved
+			// assert that the box actually got saved
 			It("should not cause an error", func() {
 				Expect(err).NotTo(HaveOccurred())
 			})
 		})
+	})
+
+	When("we need to SaveThing", func() {
+
+		Context("and there is no error", func() {
+			var (
+				t   model.Thing
+				err error
+			)
+			BeforeEach(func() {
+				t = model.Thing{ID: uuid.NewString(), Name: "my thing", Description: "my description"}
+				err = storage.NewRepository().SaveThing(t, uuid.NewString())
+			})
+
+			It("should not return an error", func() {
+				Expect(err).NotTo(HaveOccurred())
+			})
+		})
+
 	})
 })

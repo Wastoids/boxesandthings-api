@@ -11,17 +11,16 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
-	"github.com/google/uuid"
 )
 
 const (
-	tableName  = "box_things"
-	debug      = "DEBUG"
-	address    = "http://localhost:4566"
-	region     = "ca-central-1"
-	itemEntity = "item#"
-	boxEntity  = "box#"
-	details    = "details"
+	tableName   = "box_things"
+	debug       = "DEBUG"
+	address     = "http://localhost:4566"
+	region      = "ca-central-1"
+	boxEntity   = "box#"
+	details     = "details"
+	thingEntity = "thing#"
 )
 
 type dao struct {
@@ -91,7 +90,7 @@ func (d dao) saveBox(b model.Box) error {
 	_, err := d.dynamoDB.PutItem(context.TODO(), &dynamodb.PutItemInput{
 		Item: map[string]types.AttributeValue{
 			"pk": &types.AttributeValueMemberS{
-				Value: fmt.Sprintf("%v%v", boxEntity, uuid.New().String()),
+				Value: fmt.Sprintf("%v%v", boxEntity, b.ID),
 			},
 			"sk": &types.AttributeValueMemberS{
 				Value: details,
@@ -106,7 +105,20 @@ func (d dao) saveBox(b model.Box) error {
 	return err
 }
 
-func (d dao) saveThing(t model.Thing) error {
+func (d dao) saveThing(t model.Thing, boxID string) error {
+	result, err := d.dynamoDB.PutItem(context.Background(), &dynamodb.PutItemInput{
+		Item: map[string]types.AttributeValue{
+			"pk":          &types.AttributeValueMemberS{Value: fmt.Sprintf("%v%v", boxEntity, boxID)},
+			"sk":          &types.AttributeValueMemberS{Value: fmt.Sprintf("%v%v", thingEntity, t.ID)},
+			"name":        &types.AttributeValueMemberS{Value: t.Name},
+			"description": &types.AttributeValueMemberS{Value: t.Description},
+		},
+		TableName: aws.String(tableName),
+	})
+	if err != nil {
+		return err
+	}
+	fmt.Printf("got this: %v", result)
 	return nil
 }
 

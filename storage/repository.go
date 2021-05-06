@@ -20,12 +20,12 @@ func (r Repository) SaveBox(b model.Box) error {
 	return d.saveBox(b)
 }
 
-func (r Repository) SaveThing(t model.Thing) error {
+func (r Repository) SaveThing(t model.Thing, boxID string) error {
 	d, err := newDao()
 	if err != nil {
 		return err
 	}
-	return d.saveThing(t)
+	return d.saveThing(t, boxID)
 }
 
 func NewRepository() Repository {
