@@ -32,7 +32,7 @@ func (c Controller) GetFunction(e events.APIGatewayProxyRequest) (Function, erro
 				e.PathParameters["boxID"]),
 			nil
 	case "boxContent":
-		panic("implement me")
+		return service.NewBoxContent(repo, e.PathParameters["boxID"]), nil
 	default:
 		return nil, errInvalidResource
 	}

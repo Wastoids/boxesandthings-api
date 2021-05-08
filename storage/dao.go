@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 
 	"github.com/Wastoids/boxesandthings-api/model"
+	"github.com/Wastoids/boxesandthings-api/service"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
@@ -21,6 +21,8 @@ const (
 	boxEntity   = "box#"
 	details     = "details"
 	thingEntity = "thing#"
+	box         = "box"
+	thing       = "thing"
 )
 
 type dao struct {
@@ -95,8 +97,14 @@ func (d dao) saveBox(b model.Box) error {
 			"sk": &types.AttributeValueMemberS{
 				Value: details,
 			},
+			"id": &types.AttributeValueMemberS{
+				Value: b.ID,
+			},
 			"name": &types.AttributeValueMemberS{
 				Value: b.Name,
+			},
+			"type": &types.AttributeValueMemberS{
+				Value: box,
 			},
 		},
 		TableName: aws.String(tableName),
@@ -110,8 +118,10 @@ func (d dao) saveThing(t model.Thing, boxID string) error {
 		Item: map[string]types.AttributeValue{
 			"pk":          &types.AttributeValueMemberS{Value: fmt.Sprintf("%v%v", boxEntity, boxID)},
 			"sk":          &types.AttributeValueMemberS{Value: fmt.Sprintf("%v%v", thingEntity, t.ID)},
+			"id":          &types.AttributeValueMemberS{Value: t.ID},
 			"name":        &types.AttributeValueMemberS{Value: t.Name},
 			"description": &types.AttributeValueMemberS{Value: t.Description},
+			"type":        &types.AttributeValueMemberS{Value: thing},
 		},
 		TableName: aws.String(tableName),
 	})
@@ -122,11 +132,37 @@ func (d dao) saveThing(t model.Thing, boxID string) error {
 	return nil
 }
 
-func toBox(attributeMap map[string]types.AttributeValue) model.Box {
-	name := attributeMap["name"].(*types.AttributeValueMemberS)
-	return model.Box{
-		Name: name.Value,
+func (d dao) getBoxContent(boxID string) (service.BoxContentResult, error) {
+	output, err := d.dynamoDB.Query(context.Background(),
+		&dynamodb.QueryInput{
+			TableName:              aws.String(tableName),
+			KeyConditionExpression: aws.String("#pk = :boxID"),
+			ExpressionAttributeNames: map[string]string{
+				"#pk": "pk",
+			},
+			ExpressionAttributeValues: map[string]types.AttributeValue{
+				":boxID": &types.AttributeValueMemberS{Value: fmt.Sprintf("%v%v", boxEntity, boxID)},
+			},
+		})
+	if err != nil {
+		return service.BoxContentResult{}, err
 	}
+	return toBoxContentResult(output.Items), nil
+
+}
+
+func toBox(attributeMap map[string]types.AttributeValue) model.Box {
+	return model.Box{
+		ID:   attributeMap["id"].(*types.AttributeValueMemberS).Value,
+		Name: attributeMap["name"].(*types.AttributeValueMemberS).Value,
+	}
+}
+
+func toThing(attributeMap map[string]types.AttributeValue) model.Thing {
+	return model.Thing{
+		ID:          attributeMap["id"].(*types.AttributeValueMemberS).Value,
+		Name:        attributeMap["name"].(*types.AttributeValueMemberS).Value,
+		Description: attributeMap["description"].(*types.AttributeValueMemberS).Value}
 }
 
 func fromBox(b model.Box) map[string]types.AttributeValue {
@@ -134,5 +170,23 @@ func fromBox(b model.Box) map[string]types.AttributeValue {
 
 	result["name"] = &types.AttributeValueMemberS{Value: b.Name}
 
+	return result
+}
+
+func toBoxContentResult(attributeMap []map[string]types.AttributeValue) service.BoxContentResult {
+	var boxes []model.Box
+	var things []model.Thing
+	var result service.BoxContentResult
+
+	for _, entity := range attributeMap {
+		if entity["type"].(*types.AttributeValueMemberS).Value == box {
+			boxes = append(boxes, toBox(entity))
+		} else {
+			things = append(things, toThing(entity))
+		}
+	}
+
+	result.Boxes = boxes
+	result.Things = things
 	return result
 }

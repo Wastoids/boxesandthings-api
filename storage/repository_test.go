@@ -2,6 +2,7 @@ package storage_test
 
 import (
 	"github.com/Wastoids/boxesandthings-api/model"
+	"github.com/Wastoids/boxesandthings-api/service"
 	"github.com/Wastoids/boxesandthings-api/storage"
 	"github.com/google/uuid"
 	. "github.com/onsi/ginkgo"
@@ -98,5 +99,36 @@ var _ = Describe("Repository", func() {
 			})
 		})
 
+	})
+
+	When("we need to GetBoxContents", func() {
+
+		var (
+			err            error
+			box            = model.Box{ID: uuid.NewString(), Name: "my box"}
+			firstThing     = model.Thing{ID: uuid.NewString(), Name: "my first thing", Description: "my first description"}
+			secondThing    = model.Thing{ID: uuid.NewString(), Name: "my second thing", Description: "my second description"}
+			output         service.BoxContentResult
+			expectedOutput = service.BoxContentResult{
+				Boxes:  []model.Box{box},
+				Things: []model.Thing{firstThing, secondThing},
+			}
+		)
+
+		BeforeEach(func() {
+			repo := storage.NewRepository()
+			repo.SaveBox(box)
+			repo.SaveThing(firstThing, box.ID)
+			repo.SaveThing(secondThing, box.ID)
+			output, err = repo.GetBoxContent(box.ID)
+		})
+
+		It("should not return an error", func() {
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		It("should return the expected result", func() {
+			Expect(output.Equals(expectedOutput)).To(BeTrue())
+		})
 	})
 })
