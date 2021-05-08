@@ -5,7 +5,8 @@
                 "Item": {
                     "pk": {"S": "another_guy"},
                     "sk": {"S": "top#2529c1e1-a917-457f-93b7-dfefea6105eb"},
-                    "name": {"S": "House 1"}
+                    "name": {"S": "House 1"},
+                    "id": {"S": "efd5576b-fb30-40e7-88cf-5e56ce26a4f3"}
                 }
             }
         },
@@ -14,7 +15,8 @@
                 "Item": {
                     "pk": {"S": "another_guy"},
                     "sk": {"S": "top#4f117852-db61-47eb-b51a-1035c8cbf294"},
-                    "name": {"S": "House 2"}
+                    "name": {"S": "House 2"},
+                    "id": {"S": "66498e1f-631a-4854-93b9-361c1b0195ea"}
                 }
             }
         },
@@ -23,7 +25,8 @@
                 "Item": {
                     "pk": {"S": "another_guy"},
                     "sk": {"S": "top#18682a9a-9ad0-4bb5-b751-743d6aa7cec2"},
-                    "name": {"S": "Fridge in House 1"}
+                    "name": {"S": "Fridge in House 1"},
+                    "id": {"S": "66d04a73-8e63-4c7e-a727-e95bdb880d61"}
                 }
             }
         }
