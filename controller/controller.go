@@ -22,7 +22,7 @@ func (c Controller) GetFunction(e events.APIGatewayProxyRequest) (Function, erro
 
 	switch router(e) {
 	case "getTopBoxes":
-		return service.NewGetTopBoxesService(repo, e.QueryStringParameters["username"]), nil
+		return service.NewGetTopBoxesService(repo, e.PathParameters["username"]), nil
 	case "saveBox":
 		return service.NewSaveBox(repo, service.GetBoxFromRequest(e.Body)), nil
 	case "saveThing":
