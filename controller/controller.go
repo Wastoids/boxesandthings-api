@@ -2,6 +2,7 @@ package controller
 
 import (
 	"errors"
+	"net/http"
 
 	"github.com/Wastoids/boxesandthings-api/service"
 	"github.com/Wastoids/boxesandthings-api/storage"
@@ -19,8 +20,8 @@ type Controller struct{}
 func (c Controller) GetFunction(e events.APIGatewayProxyRequest) (Function, error) {
 	repo := storage.NewRepository()
 
-	switch e.PathParameters["resource"] {
-	case "topBoxes":
+	switch router(e) {
+	case "getTopBoxes":
 		return service.NewGetTopBoxesService(repo, e.QueryStringParameters["username"]), nil
 	case "saveBox":
 		return service.NewSaveBox(repo, service.GetBoxFromRequest(e.Body)), nil
@@ -30,9 +31,35 @@ func (c Controller) GetFunction(e events.APIGatewayProxyRequest) (Function, erro
 				service.GetThingFromRequest(e.Body),
 				e.PathParameters["boxID"]),
 			nil
+	case "boxContent":
+		panic("implement me")
 	default:
 		return nil, errInvalidResource
 	}
+}
+
+func router(e events.APIGatewayProxyRequest) string {
+	var result string
+	resource := e.PathParameters["resource"]
+
+	if resource == "top" {
+		if e.HTTPMethod == http.MethodGet {
+			return "getTopBoxes"
+		}
+	}
+
+	if resource == "box" {
+		if e.HTTPMethod == http.MethodPost {
+			return "saveBox"
+		}
+	}
+
+	if resource == "thing" {
+		if e.HTTPMethod == http.MethodPost {
+			return "saveThing"
+		}
+	}
+	return result
 }
 
 func NewController() Controller {
