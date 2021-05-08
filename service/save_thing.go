@@ -5,7 +5,6 @@ import (
 	"errors"
 
 	"github.com/Wastoids/boxesandthings-api/model"
-	"github.com/Wastoids/boxesandthings-api/storage"
 )
 
 var (
@@ -13,12 +12,12 @@ var (
 )
 
 type SaveThing struct {
-	db    storage.Repository
+	db    Storage
 	t     model.Thing
 	boxID string
 }
 
-func NewSaveThing(db storage.Repository, t model.Thing, boxID string) SaveThing {
+func NewSaveThing(db Storage, t model.Thing, boxID string) SaveThing {
 	return SaveThing{db: db, t: t}
 }
 
