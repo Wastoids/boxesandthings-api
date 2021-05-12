@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/Wastoids/boxesandthings-api/model"
 	"github.com/Wastoids/boxesandthings-api/service"
@@ -163,14 +164,6 @@ func toThing(attributeMap map[string]types.AttributeValue) model.Thing {
 		ID:          attributeMap["id"].(*types.AttributeValueMemberS).Value,
 		Name:        attributeMap["name"].(*types.AttributeValueMemberS).Value,
 		Description: attributeMap["description"].(*types.AttributeValueMemberS).Value}
-}
-
-func fromBox(b model.Box) map[string]types.AttributeValue {
-	result := map[string]types.AttributeValue{}
-
-	result["name"] = &types.AttributeValueMemberS{Value: b.Name}
-
-	return result
 }
 
 func toBoxContentResult(attributeMap []map[string]types.AttributeValue) service.BoxContentResult {
