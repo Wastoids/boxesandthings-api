@@ -1,8 +1,8 @@
 package model
 
 type Box struct {
-	ID   string
-	Name string
+	ID   string `json:"id"`
+	Name string `json:"name"`
 }
 
 func (b Box) Equals(that Box) bool {

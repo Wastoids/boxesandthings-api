@@ -77,7 +77,6 @@ func (d dao) getTopLevelBoxesForUser(userName string) (boxes []model.Box, err er
 		},
 	)
 	if err != nil {
-		fmt.Printf("%v", err)
 		return nil, err
 	}
 
@@ -85,7 +84,6 @@ func (d dao) getTopLevelBoxesForUser(userName string) (boxes []model.Box, err er
 		boxes = append(boxes, toBox(item))
 	}
 
-	fmt.Printf("%v", result)
 	return boxes, nil
 }
 

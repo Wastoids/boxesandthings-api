@@ -19,10 +19,10 @@ type Controller struct{}
 
 func (c Controller) GetFunction(e events.APIGatewayProxyRequest) (Function, error) {
 	repo := storage.NewRepository()
-
+	email := e.RequestContext.Authorizer["claims"].(map[string]interface{})["email"].(string)
 	switch router(e) {
 	case "getTopBoxes":
-		return service.NewGetTopBoxesService(repo, e.PathParameters["username"]), nil
+		return service.NewGetTopBoxesService(repo, email), nil
 	case "saveBox":
 		return service.NewSaveBox(repo, service.GetBoxFromRequest(e.Body)), nil
 	case "saveThing":
