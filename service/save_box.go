@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/Wastoids/boxesandthings-api/model"
+	"github.com/google/uuid"
 )
 
 var (
@@ -20,7 +21,7 @@ func (s SaveBox) Run() (interface{}, error) {
 	if s.b.Equals(model.Box{}) {
 		return nil, errCannotSaveEmptyBox
 	}
-
+	s.b.ID = uuid.NewString()
 	return nil, s.db.SaveBox(s.b)
 }
 

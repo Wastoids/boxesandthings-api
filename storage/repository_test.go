@@ -131,4 +131,22 @@ var _ = Describe("Repository", func() {
 			Expect(output.Equals(expectedOutput)).To(BeTrue())
 		})
 	})
+
+	FWhen("we need to SaveTopBox", func() {
+		var (
+			err error
+			box = model.Box{
+				ID:   uuid.NewString(),
+				Name: "my top box",
+			}
+		)
+
+		BeforeEach(func() {
+			err = storage.NewRepository().SaveTopBox("rashwinrao1993@gmail.com", box)
+		})
+
+		It("should not return an error", func() {
+			Expect(err).NotTo(HaveOccurred())
+		})
+	})
 })

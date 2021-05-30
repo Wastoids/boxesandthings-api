@@ -15,6 +15,14 @@ func (r Repository) GetTopLevelBoxesForUser(userName string) ([]model.Box, error
 	return d.getTopLevelBoxesForUser(userName)
 }
 
+func (r Repository) SaveTopBox(userName string, b model.Box) error {
+	d, err := newDao()
+	if err != nil {
+		return err
+	}
+	return d.saveTopBox(userName, b)
+}
+
 func (r Repository) SaveBox(b model.Box) error {
 	d, err := newDao()
 	if err != nil {

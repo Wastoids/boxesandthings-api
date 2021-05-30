@@ -33,6 +33,8 @@ func (c Controller) GetFunction(e events.APIGatewayProxyRequest) (Function, erro
 			nil
 	case "boxContent":
 		return service.NewBoxContent(repo, e.PathParameters["boxID"]), nil
+	case "createTopBox":
+		return service.NewSaveTopBox(repo, email, service.GetBoxFromRequest(e.Body)), nil
 	default:
 		return nil, errInvalidResource
 	}
@@ -45,6 +47,9 @@ func router(e events.APIGatewayProxyRequest) string {
 	if resource == "top" {
 		if e.HTTPMethod == http.MethodGet {
 			return "getTopBoxes"
+		}
+		if e.HTTPMethod == http.MethodPost {
+			return "createTopBox"
 		}
 	}
 

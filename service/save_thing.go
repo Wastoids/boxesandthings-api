@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/Wastoids/boxesandthings-api/model"
+	"github.com/google/uuid"
 )
 
 var (
@@ -24,6 +25,9 @@ func NewSaveThing(db Storage, t model.Thing, boxID string) SaveThing {
 func (s SaveThing) Run() (interface{}, error) {
 	if len(s.t.Name) == 0 {
 		return nil, nameRequiredForThing
+	}
+	if len(s.t.ID) == 0 {
+		s.t.ID = uuid.NewString()
 	}
 	return nil, s.db.SaveThing(s.t, s.boxID)
 }

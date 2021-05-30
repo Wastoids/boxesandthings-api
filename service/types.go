@@ -11,6 +11,7 @@ type Storage interface {
 	SaveBox(b model.Box) error
 	SaveThing(t model.Thing, boxID string) error
 	GetBoxContent(boxID string) (BoxContentResult, error)
+	SaveTopBox(userName string, b model.Box) error
 }
 
 type BoxContentResult struct {

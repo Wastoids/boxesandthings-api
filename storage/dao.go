@@ -15,15 +15,16 @@ import (
 )
 
 const (
-	tableName   = "box_things"
-	debug       = "DEBUG"
-	address     = "http://localhost:4566"
-	region      = "ca-central-1"
-	boxEntity   = "box#"
-	details     = "details"
-	thingEntity = "thing#"
-	box         = "box"
-	thing       = "thing"
+	tableName    = "box_things"
+	debug        = "DEBUG"
+	address      = "http://localhost:4566"
+	region       = "ca-central-1"
+	boxEntity    = "box#"
+	details      = "details"
+	thingEntity  = "thing#"
+	topBoxEntity = "top#"
+	box          = "box"
+	thing        = "thing"
 )
 
 type dao struct {
@@ -71,7 +72,7 @@ func (d dao) getTopLevelBoxesForUser(userName string) (boxes []model.Box, err er
 					Value: userName,
 				},
 				":topBoxes": &types.AttributeValueMemberS{
-					Value: "top#",
+					Value: topBoxEntity,
 				},
 			},
 		},
@@ -109,6 +110,30 @@ func (d dao) saveBox(b model.Box) error {
 		TableName: aws.String(tableName),
 	})
 
+	return err
+}
+
+func (d dao) saveTopBox(userName string, b model.Box) error {
+	_, err := d.dynamoDB.PutItem(context.TODO(), &dynamodb.PutItemInput{
+		Item: map[string]types.AttributeValue{
+			"pk": &types.AttributeValueMemberS{
+				Value: userName,
+			},
+			"sk": &types.AttributeValueMemberS{
+				Value: fmt.Sprintf("%v%v", topBoxEntity, b.ID),
+			},
+			"id": &types.AttributeValueMemberS{
+				Value: b.ID,
+			},
+			"name": &types.AttributeValueMemberS{
+				Value: b.Name,
+			},
+			"type": &types.AttributeValueMemberS{
+				Value: box,
+			},
+		},
+		TableName: aws.String(tableName),
+	})
 	return err
 }
 
